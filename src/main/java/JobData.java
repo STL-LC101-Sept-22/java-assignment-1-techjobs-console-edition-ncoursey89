@@ -5,10 +5,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -37,7 +34,7 @@ public class JobData {
         for (HashMap<String, String> row : allJobs) {
             String aValue = row.get(field);
 
-            if (!values.contains(aValue)) {
+            if (!values.contains(aValue)) { // if values does not contain the value, then add the value to values
                 values.add(aValue);
             }
         }
@@ -65,7 +62,7 @@ public class JobData {
      * with "Enterprise Holdings, Inc".
      *
      * @param column   Column that should be searched.
-     * @param value Value of teh field to search for
+     * @param value Value of the field to search for
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
@@ -74,12 +71,10 @@ public class JobData {
         loadData();
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
-
+        String lowerCaseQuery = value.toLowerCase();
         for (HashMap<String, String> row : allJobs) {
-
-            String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
+            String aValue = row.get(column).toLowerCase();
+            if (aValue.contains(lowerCaseQuery)) {
                 jobs.add(row);
             }
         }
@@ -99,11 +94,29 @@ public class JobData {
         loadData();
 
         // TODO - implement this method
-        return null;
+        //this is new
+        String lowerCaseQuery = value.toLowerCase();
+        ArrayList<HashMap<String, String>> result = new ArrayList<>();
+        for (HashMap<String, String> job : allJobs) { // for each job in alljobs
+            for (Map.Entry<String, String> entry : job.entrySet()) { // for every key, value in the job description
+                if (entry.getValue().toLowerCase().contains(lowerCaseQuery)) {
+                    // Append this job to the result array, and stop processing this job
+                    result.add(job);
+                    break;
+                }
+            }
+        }
+        return result;
+//            String aValue = row.get(value); // get row value
+//            if (value.contains(aValue)) {   // if row
+//                jobs.add(row);
+//            }
+
+        // OLD RETURN --> return null;
     }
 
     /**
-     * Read in data from a CSV file and store it in a list
+     * Read in data from a CSV file and store it in a list --> DO NOT MODIFY
      */
     private static void loadData() {
 
